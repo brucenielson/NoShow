@@ -32,34 +32,30 @@ def create_train_test_files():
     X['DiffDates'] = (X['AppointmentDay'] - X['ScheduledDay'])
     # Drop unneeded columns
     X = X.drop(columns=['ScheduledDay', 'AppointmentDay'])
-    print(X)
     # Encode result field
     Y = df[['No-show']]
     Y = label_encode(Y, 'No-show')
 
+    # Random train/test split
     x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.2)
-    # Combine to save out to file
+    # Combine back to save out to file
     x_train = x_train.copy()
     x_train['No-show'] = y_train
-
     x_test = x_test.copy()
     x_test['No-show'] = y_test
-
+    # Save as csv files
     x_train.to_csv('train.csv', index=False)
     x_test.to_csv('test.csv', index=False)
 
-    print(x_train.head(5))
-    print(len(x_train))
-    print(x_test.head(5))
-    print(len(x_test))
-
+    # Read files back to be sure they worked
     file_name = os.getcwd() + '\\train.csv'
     train2 = pd.read_csv(file_name)
     file_name = os.getcwd() + '\\test.csv'
     test2 = pd.read_csv(file_name)
-    print(train2.head(5))
-    print(len(train2))
-    print(test2.head(5))
-    print(len(test2))
+    assert len(x_train) == len(train2)
+    assert len(y_train) == len(train2)
+    assert len(x_test) == len(test2)
+    assert len(y_test) == len(test2)
+
 
 main()
