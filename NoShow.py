@@ -22,6 +22,13 @@ def main():
     print("Validation Set:")
     print_statistics(y_valdiate_pred, y_validate)
 
+    # But how often do people no show?
+    print("")
+    no_shows = float(y_train.sum()) / float(len(y_train))
+    print('No Shows in Train Set: %.2f' % no_shows)
+    pred_no_shows = float(y_pred.sum()) / float(len(y_pred))
+    print('Predicted No Shows: %.2f' % pred_no_shows)
+
 
 
 def print_statistics(y_pred, y_actuals):
