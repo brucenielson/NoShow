@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
+import numpy as np
 
 def main():
     # create_train_test_files()
@@ -22,12 +23,29 @@ def main():
     print("Validation Set:")
     print_statistics(y_valdiate_pred, y_validate)
 
+    # How well does it make predictions?
+    y_valdiate_pred_prob = clf.predict_proba(x_validate)[:,1]
+    print("")
+    print("Strongest Prediction: %.2f" % np.max(y_valdiate_pred_prob))
+    print("Strongest Prediction Index: %d" % np.argmax(y_valdiate_pred_prob))
+
     # But how often do people no show?
     print("")
     no_shows = float(y_train.sum()) / float(len(y_train))
     print('No Shows in Train Set: %.2f' % no_shows)
     pred_no_shows = float(y_pred.sum()) / float(len(y_pred))
     print('Predicted No Shows: %.2f' % pred_no_shows)
+
+    # List of predictions
+    y_predictions_data = pd.DataFrame(y_valdiate_pred_prob, columns=['Probs'])
+    y_predictions_data['Predicted'] = y_valdiate_pred
+    y_predictions_data['Actual'] = y_validate
+    y_predictions_data = y_predictions_data[y_predictions_data['Predicted'] == 1]
+    print("")
+    print("List of Predictions:")
+    print(y_predictions_data)
+    print_statistics(y_predictions_data['Predicted'], y_predictions_data['Actual'])
+
 
 
 
